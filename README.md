@@ -26,6 +26,11 @@ every 15 minutes, forever, even when your laptop is off.
   should show fresh `cloud pulse ok` entries from `hermes` every 15 minutes
 
 ## Notes
+- **Status 2026-08-15:** GitHub blocked the first run — *"account is locked due
+  to a billing issue"* (account-level, not repo-level). Fix: check
+  `github.com/settings/billing` for any past-due item. Until then, the interim
+  pulse runs via **Google Apps Script** (`cloud-pulse.gs` in the VPS-MIGRATION
+  kit) — zero card, works with any Google account.
 - Scheduled workflows auto-disable after **60 days without repo activity** —
   push a commit (or leave the cron touching the API) to keep it alive; a
   workflow_dispatch run also counts as activity.
