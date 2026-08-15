@@ -1,0 +1,48 @@
+name: hw-pulse
+
+# Hermes World 24/7 heartbeat crew — free cloud pulse.
+# Fires every 15 minutes on GitHub's runners (no server, no card):
+# posts resting heartbeats for hermes/memory/vault/lulu + runs the
+# status_fix patrol against the live Vercel store — exactly what the
+# local pulse.sh does, so the world stays fresh even when the laptop
+# is off. Timezone is Manila so logged messages match local time.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Manila
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write status env from secrets
+        run: |
+          printf 'AGENT_STATUS_URL=%s\nAGENT_STATUS_TOKEN=%s\nAGENT_STATUS_URL_ALT=\n' \
+            "${{ secrets.HW_STATUS_URL }}" "${{ secrets.HW_STATUS_TOKEN }}" \
+            > scripts/agent-status.env
+
+      - name: Pulse heartbeats (hermes, memory, vault, lulu)
+        run: |
+          cd scripts
+          python3 agent_status.py hermes resting "on duty — $(date +%H:%M)" || true
+          python3 agent_status.py memory resting "hindsight bank online" || true
+          python3 agent_status.py vault resting "notes vault ready" || true
+          python3 agent_status.py lulu resting "napping in the sun ☀" || true
+
+      - name: Status-fix patrol (re-seed, stale reset, ghost cleanup)
+        run: |
+          cd scripts
+          python3 status_fix.py || true
+
+      - name: Report result
+        run: |
+          cd scripts
+          python3 agent_status.py hermes resting "cloud pulse ok — $(date +%H:%M)" || true

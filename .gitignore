@@ -1,0 +1,2 @@
+# never commit the generated env (token lives in GitHub secrets)
+scripts/agent-status.env
