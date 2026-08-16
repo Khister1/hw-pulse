@@ -8,8 +8,6 @@ name: hw-pulse
 # is off. Timezone is Manila so logged messages match local time.
 
 on:
-  schedule:
-    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 permissions:
